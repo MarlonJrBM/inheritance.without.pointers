@@ -2,12 +2,15 @@
 
 #include "interface.hh"
 
+
+// This is the base (interface) class.
 struct ICalculator {
   virtual int compute(int input) const = 0;
   virtual void log(int input, int output) const = 0;
   virtual ~ICalculator(){};
 };
 
+// Concrete class #1 : Big Calculator
 struct BigCalculator : ICalculator {
   int compute(int input) const override { return input * 5; }
 
@@ -17,6 +20,7 @@ struct BigCalculator : ICalculator {
   }
 };
 
+// Concrete class #2 : Small Calculator
 struct SmallCalculator : ICalculator {
   int compute(int input) const override { return input + 2; }
 
@@ -26,6 +30,10 @@ struct SmallCalculator : ICalculator {
   }
 };
 
+// Now the magic begins: instead of using ICalculator* to refer to Big and SmallCalculators,
+// we will use the magic wrapper Implementation<ICalculator> (refer to interface.hh header).
+// This new type is a way of avoiding the whole runtime/vtable lookup mechanism, as well
+// as allocations on the heap (thanks to std::any's internals).
 using Calculator = Implementation<ICalculator>;
 
 Calculator getBigCalculator() { return BigCalculator{}; }
